@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>智能待办事项管理系统 v6</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .navbar {
+            background-color: #4285f4;
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .task-list {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* 表单样式 */
+        .task-form {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-warning {
+            background-color: #fbbc05;
+            color: white;
+        }
+        .btn-success {
+            background-color: #34a853;
+            color: white;
+        }
+
+        /* 任务项样式 */
+        .task-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .completed {
+            opacity: 0.7;
+            background-color: #f5f5f5;
+        }
+        .completed .task-title {
+            text-decoration: line-through;
+        }
+
+        /* 分类系统样式 */
+        .category-group {
+            margin-bottom: 15px;
+        }
+        .category-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+        .category-tag {
+            background-color: #e0e0e0;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .category-tag:hover {
+            background-color: #d0d0d0;
+        }
+        .category-tag.selected {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        /* 时间提醒样式 */
+        .time-remaining {
+            font-size: 14px;
+        }
+        .normal {
+            color: #666;
+        }
+        .warning {
+            color: #fbbc05;
+            font-weight: bold;
+        }
+        .urgent {
+            color: #ea4335;
+            font-weight: bold;
+        }
+        .expired {
+            color: #ea4335;
+            font-weight: bold;
+            text-decoration: line-through;
+        }
+
+        /* 同步功能样式 */
+        .sync-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        #sync-status {
+            color: #666;
+            font-size: 14px;
+        }
+        .sync-btn {
+            background: #4285f4;
+            padding: 8px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .sync-btn:hover {
+            background-color: #3367d6;
+        }
+        .sync-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* 消息提示 */
+        .message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 5px;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+        .success {
+            background-color: #34a853;
+        }
+        .error {
+            background-color: #ea4335;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h1>智能待办事项管理系统</h1>
+        </nav>
+        
+        <div class="task-list">
+            <h2>我的任务</h2>
+            
+            <div class="task-form" id="task-form">
+                <div class="form-group">
+                    <label>任务标题</label>
+                    <input type="text" id="task-title" class="form-control" placeholder="输入任务标题">
+                </div>
+                <div class="form-group">
+                    <label>截止时间</label>
+                    <input type="datetime-local" id="task-due" class="form-control">
+                </div>
+                <div class="form-group category-group">
+                    <label>任务分类</label>
+                    <input type="text" id="task-category" class="form-control" placeholder="输入或选择分类">
+                    <div class="category-suggestions" id="category-suggestions"></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancel-task-btn">取消</button>
+                    <button class="btn btn-primary" id="save-task-btn">保存</button>
+                </div>
+            </div>
+            
+            <div id="tasks-container"></div>
+            
+            <div class="sync-section">
+                <button class="sync-btn" id="sync-btn">立即同步</button>
+                <div id="sync-status">上次同步：从未同步</div>
+            </div>
+            
+            <button class="btn btn-primary" id="add-task-btn" style="margin-top: 15px;">+ 添加任务</button>
+        </div>
+    </div>
+
+    <script>
+        // 系统配置
+        const API_BASE = 'http://localhost:8000/api';
+        let tasks = [];
+        const categoryData = {
+            '学习': ['作业', '复习', '阅读', '考试'],
+            '工作': ['会议', '报告', '项目', '出差'],
+            '生活': ['购物', '缴费', '维修', '健身']
+        };
+
+        // DOM元素
+        const addTaskBtn = document.getElementById('add-task-btn');
+        const taskForm = document.getElementById('task-form');
+        const tasksContainer = document.getElementById('tasks-container');
+        const categorySuggestions = document.getElementById('category-suggestions');
+        const syncBtn = document.getElementById('sync-btn');
+        const syncStatus = document.getElementById('sync-status');
+
+        // 事件监听
+        addTaskBtn.addEventListener('click', showForm);
+        document.getElementById('cancel-task-btn').addEventListener('click', hideForm);
+        document.getElementById('save-task-btn').addEventListener('click', saveTask);
+        document.getElementById('task-title').addEventListener('input', updateCategorySuggestions);
+        syncBtn.addEventListener('click', syncTasks);
+
+        // 表单功能
+        function showForm() {
+            taskForm.style.display = 'block';
+            addTaskBtn.style.display = 'none';
+            document.getElementById('task-title').focus();
+        }
+
+        function hideForm() {
+            taskForm.style.display = 'none';
+            addTaskBtn.style.display = 'block';
+            resetForm();
+        }
+
+        function saveTask() {
+            const newTask = {
+                id: Date.now(),
+                title: document.getElementById('task-title').value.trim(),
+                due: document.getElementById('task-due').value,
+                category: document.getElementById('task-category').value.trim() || '其他',
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!newTask.title) {
+                showMessage('请填写任务标题', 'error');
+                return;
+            }
+
+            tasks.push(newTask);
+            updateTaskList();
+            resetForm();
+            hideForm();
+            showMessage('任务添加成功', 'success');
+        }
+
+        // 任务列表功能
+        function updateTaskList() {
+            tasksContainer.innerHTML = tasks.map(task => {
+                const timeStatus = getTimeStatus(task.due);
+                return `
+                <div class="task-item ${task.completed ? 'completed' : ''}">
+                    <div>
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-meta">
+                            <span class="task-category">${task.category}</span>
+                            <span class="time-remaining ${timeStatus.class}">${timeStatus.text}</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-warning edit-btn" data-id="${task.id}">编辑</button>
+                        <button class="btn btn-success complete-btn" data-id="${task.id}">
+                            ${task.completed ? '已完成' : '完成'}
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // 绑定操作事件
+            bindEditEvents();
+            bindCompleteEvents();
+        }
+
+        // 时间状态计算
+        function getTimeStatus(due) {
+            if (!due) return { text: '无截止时间', class: 'normal' };
+            
+            const now = new Date();
+            const dueDate = new Date(due);
+            const diff = dueDate - now;
+            const hours = Math.floor(diff / 3600000);
+            
+            if (diff < 0) return { text: '已过期', class: 'expired' };
+            if (hours < 24) return { text: `剩余${hours}小时`, class: 'urgent' };
+            if (hours < 72) return { text: `剩余${Math.floor(hours/24)}天`, class: 'warning' };
+            return { text: dueDate.toLocaleDateString(), class: 'normal' };
+        }
+
+        // 任务操作功能
+        function bindEditEvents() {
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const taskId = parseInt(btn.dataset.id);
+                    const task = tasks.find(t => t.id === taskId);
+                    document.getElementById('task-title').value = task.title;
+                    document.getElementById('task-due').value = task.due;
+                    document.getElementById('task-category').value = task.category;
+                    tasks = tasks.filter(t => t.id !== taskId);
+                    updateTaskList();
+                });
+            });
+        }
+
+        function bindCompleteEvents() {
+            document.querySelectorAll('.complete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const taskId = parseInt(btn.dataset.id);
+                    const task = tasks.find(t => t.id === taskId);
+                    task.completed = !task.completed;
+                    updateTaskList();
+                });
+            });
+        }
+
+        // 分类建议功能
+        function updateCategorySuggestions() {
+            const input = document.getElementById('task-title').value.toLowerCase();
+            const matches = [];
+
+            Object.entries(categoryData).forEach(([category, keywords]) => {
+                const hasMatch = input.includes(category.toLowerCase()) || 
+                                keywords.some(k => input.includes(k.toLowerCase()));
+                if (hasMatch) matches.push(category);
+            });
+
+            showCategorySuggestions([...new Set(matches)]);
+        }
+
+        function showCategorySuggestions(categories) {
+            categorySuggestions.innerHTML = categories.map(cat => `
+                <div class="category-tag" onclick="selectCategory('${cat}')">${cat}</div>
+            `).join('');
+        }
+
+        function selectCategory(category) {
+            document.getElementById('task-category').value = category;
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        // 数据同步功能
+        async function syncTasks() {
+            try {
+                syncBtn.disabled = true;
+                syncStatus.textContent = '同步中...';
+                
+                // 模拟API请求
+                const response = await fetch(`${API_BASE}/tasks`);
+                if (!response.ok) throw new Error('同步失败');
+                const serverTasks = await response.json();
+                
+                tasks = serverTasks;
+                updateTaskList();
+                syncStatus.textContent = `上次同步：${new Date().toLocaleString()}`;
+                showMessage('同步成功', 'success');
+            } catch (error) {
+                syncStatus.textContent = '同步失败';
+                showMessage(error.message, 'error');
+                console.error('同步错误:', error);
+            } finally {
+                syncBtn.disabled = false;
+            }
+        }
+
+        // 辅助功能
+        function resetForm() {
+            document.getElementById('task-title').value = '';
+            document.getElementById('task-due').value = '';
+            document.getElementById('task-category').value = '';
+            categorySuggestions.innerHTML = '';
+        }
+
+        function showMessage(text, type) {
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // 初始化
+        updateTaskList();
+    </script>
+</body>
+</html>
