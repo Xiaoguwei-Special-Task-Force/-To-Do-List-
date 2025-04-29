@@ -1,0 +1,15 @@
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\bin\Debug\net7.0-windows\ToDoList.exe
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\bin\Debug\net7.0-windows\ToDoList.deps.json
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\bin\Debug\net7.0-windows\ToDoList.runtimeconfig.json
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\bin\Debug\net7.0-windows\ToDoList.dll
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\bin\Debug\net7.0-windows\ToDoList.pdb
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.GeneratedMSBuildEditorConfig.editorconfig
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.AssemblyInfoInputs.cache
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.AssemblyInfo.cs
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.csproj.CoreCompileInputs.cache
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.sourcelink.json
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.dll
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\refint\ToDoList.dll
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.pdb
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ToDoList.genruntimeconfig.cache
+G:\VisualStudioProjects\-To-Do-List-\ToDoList\obj\Debug\net7.0-windows\ref\ToDoList.dll
