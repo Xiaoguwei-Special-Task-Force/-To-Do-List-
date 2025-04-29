@@ -55,7 +55,7 @@ namespace ToDoList
             int leftPanelWidth = this.ClientSize.Width / 2 - 10;
             taskListView = new ListView();
             taskListView.Location = new Point(10, 10);
-            taskListView.Size = new Size(leftPanelWidth, this.ClientSize.Height - 130);
+            taskListView.Size = new Size(leftPanelWidth, this.ClientSize.Height - 20);
             taskListView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             taskListView.View = View.Details;
             taskListView.FullRowSelect = true;
@@ -65,43 +65,48 @@ namespace ToDoList
             taskListView.Columns.Add("任务描述", 200);
             taskListView.Columns.Add("截止时间", 120);
 
-            // 右侧预留区域
-            Panel rightPanel = new Panel();
-            rightPanel.Location = new Point(leftPanelWidth + 20, 10);
-            rightPanel.Size = new Size(this.ClientSize.Width - leftPanelWidth - 30, this.ClientSize.Height - 20);
-            rightPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            rightPanel.BackColor = Color.LightGray;
+            // 右侧控件区域
+            int rightPanelX = leftPanelWidth + 20;
+            int rightPanelWidth = this.ClientSize.Width - leftPanelWidth - 30;
+            int verticalSpacing = 10;
+            int currentY = 10;
 
-            // 时间选择器
+            // 任务名称输入框
+            taskTextBox.Location = new Point(rightPanelX, currentY);
+            taskTextBox.Size = new Size(rightPanelWidth, 20);
+            taskTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            currentY += taskTextBox.Height + verticalSpacing;
+
+            // 截止时间选择器
             deadlinePicker = new DateTimePicker();
-            deadlinePicker.Location = new Point(10, taskListView.Bottom + 10);
-            deadlinePicker.Size = new Size(150, 20);
-            deadlinePicker.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            deadlinePicker.Location = new Point(rightPanelX, currentY);
+            deadlinePicker.Size = new Size(rightPanelWidth, 20);
+            deadlinePicker.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            currentY += deadlinePicker.Height + verticalSpacing;
 
-            // 描述输入框
+            // 任务描述输入框
             descriptionTextBox = new TextBox();
-            descriptionTextBox.Location = new Point(deadlinePicker.Right + 10, taskListView.Bottom + 10);
-            descriptionTextBox.Size = new Size(leftPanelWidth - deadlinePicker.Width - 20, 20);
-            descriptionTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            descriptionTextBox.PlaceholderText = "任务描述";
+            descriptionTextBox.Location = new Point(rightPanelX, currentY);
+            descriptionTextBox.Size = new Size(rightPanelWidth, 100);
+            descriptionTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            descriptionTextBox.Multiline = true;
+            currentY += descriptionTextBox.Height + verticalSpacing;
 
-            // 原有控件调整位置
-            taskTextBox.Location = new Point(10, descriptionTextBox.Bottom + 10);
-            taskTextBox.Size = new Size(leftPanelWidth - 200, 20);
-            taskTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            addButton.Location = new Point(taskTextBox.Right + 10, descriptionTextBox.Bottom + 10);
-            addButton.Size = new Size(80, 20);
-            addButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            deleteButton.Location = new Point(addButton.Right + 10, descriptionTextBox.Bottom + 10);
-            deleteButton.Size = new Size(80, 20);
-            deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            // 添加按钮
+            addButton.Location = new Point(rightPanelX, currentY);
+            addButton.Size = new Size(rightPanelWidth / 2 - 5, 20);
+            addButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
+            // 删除按钮
+            deleteButton.Location = new Point(rightPanelX + addButton.Width + 10, currentY);
+            deleteButton.Size = new Size(rightPanelWidth / 2 - 5, 20);
+            deleteButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            
             this.Controls.AddRange(new Control[] {
                 taskListView,
-                rightPanel,
+                taskTextBox,
                 deadlinePicker,
                 descriptionTextBox,
-                taskTextBox,
                 addButton,
                 deleteButton
             });
