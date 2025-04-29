@@ -96,13 +96,21 @@ namespace ToDoList
             addButton.Location = new Point(rightPanelX, currentY);
             // 增大按钮高度和宽度
             addButton.Size = new Size(rightPanelWidth / 2 - 5, 40);
-            addButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            // 修改 Anchor 属性，使其支持水平方向自适应
+            addButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Left;
 
             // 删除按钮
             deleteButton.Location = new Point(rightPanelX + addButton.Width + 10, currentY);
             // 增大按钮高度和宽度
             deleteButton.Size = new Size(rightPanelWidth / 2 - 5, 40);
-            deleteButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            // 修改 Anchor 属性，使其支持水平方向自适应
+            deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Left;
+            
+            // 调整按钮的垂直位置，确保不会被任务描述覆盖
+            int buttonPanelHeight = addButton.Height + verticalSpacing;
+            currentY = this.ClientSize.Height - buttonPanelHeight - verticalSpacing;
+            addButton.Location = new Point(rightPanelX, currentY);
+            deleteButton.Location = new Point(rightPanelX + addButton.Width + 10, currentY);
             
             this.Controls.AddRange(new Control[] {
                 taskListView,
