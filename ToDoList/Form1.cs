@@ -25,7 +25,8 @@ namespace ToDoList
     public partial class Form1 : Form
     {
         private List<Task> tasks = new List<Task>();
-        private ListBox taskListBox = new ListBox();
+        // 将 ListBox 替换为 ListView
+        private ListView taskListView = new ListView();
         private TextBox taskTextBox = new TextBox();
         private Button addButton = new Button { Text = "添加" };
         private Button deleteButton = new Button { Text = "删除" };
@@ -40,8 +41,8 @@ namespace ToDoList
 
         private void InitializeComponent()
         {
-            this.ClientSize = new System.Drawing.Size(400, 300);
-        this.MinimumSize = new System.Drawing.Size(400, 300);
+            this.ClientSize = new System.Drawing.Size(800, 600);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Text = "ToDo List";
         }
 
@@ -50,38 +51,54 @@ namespace ToDoList
 
         private void InitializeUI()
         {
-            // 任务列表
-            taskListBox = new ListBox();
-            taskListBox.Location = new Point(10, 10);
-            taskListBox.Size = new Size(this.ClientSize.Width - 20, this.ClientSize.Height - 130);
-            taskListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            // 左侧任务列表区域
+            int leftPanelWidth = this.ClientSize.Width / 2 - 10;
+            taskListView = new ListView();
+            taskListView.Location = new Point(10, 10);
+            taskListView.Size = new Size(leftPanelWidth, this.ClientSize.Height - 130);
+            taskListView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            taskListView.View = View.Details;
+            taskListView.FullRowSelect = true;
+            
+            // 添加列标题
+            taskListView.Columns.Add("任务名称", 120);
+            taskListView.Columns.Add("任务描述", 200);
+            taskListView.Columns.Add("截止时间", 120);
+
+            // 右侧预留区域
+            Panel rightPanel = new Panel();
+            rightPanel.Location = new Point(leftPanelWidth + 20, 10);
+            rightPanel.Size = new Size(this.ClientSize.Width - leftPanelWidth - 30, this.ClientSize.Height - 20);
+            rightPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            rightPanel.BackColor = Color.LightGray;
 
             // 时间选择器
             deadlinePicker = new DateTimePicker();
-            deadlinePicker.Location = new Point(10, taskListBox.Bottom + 10);
+            deadlinePicker.Location = new Point(10, taskListView.Bottom + 10);
             deadlinePicker.Size = new Size(150, 20);
             deadlinePicker.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             // 描述输入框
             descriptionTextBox = new TextBox();
-            descriptionTextBox.Location = new Point(deadlinePicker.Right + 10, taskListBox.Bottom + 10);
-            descriptionTextBox.Size = new Size(this.ClientSize.Width - deadlinePicker.Right - 20, 20);
-            descriptionTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            descriptionTextBox.Location = new Point(deadlinePicker.Right + 10, taskListView.Bottom + 10);
+            descriptionTextBox.Size = new Size(leftPanelWidth - deadlinePicker.Width - 20, 20);
+            descriptionTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             descriptionTextBox.PlaceholderText = "任务描述";
 
             // 原有控件调整位置
             taskTextBox.Location = new Point(10, descriptionTextBox.Bottom + 10);
-            taskTextBox.Size = new Size(this.ClientSize.Width - 200, 20);
-            taskTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            taskTextBox.Size = new Size(leftPanelWidth - 200, 20);
+            taskTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             addButton.Location = new Point(taskTextBox.Right + 10, descriptionTextBox.Bottom + 10);
             addButton.Size = new Size(80, 20);
-            addButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            addButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             deleteButton.Location = new Point(addButton.Right + 10, descriptionTextBox.Bottom + 10);
             deleteButton.Size = new Size(80, 20);
-            deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             this.Controls.AddRange(new Control[] {
-                taskListBox,
+                taskListView,
+                rightPanel,
                 deadlinePicker,
                 descriptionTextBox,
                 taskTextBox,
@@ -101,7 +118,12 @@ namespace ToDoList
             if (!string.IsNullOrEmpty(newTask.Name))
             {
                 tasks.Add(newTask);
-                taskListBox.Items.Add(newTask);
+                // 添加任务到 ListView
+                ListViewItem item = new ListViewItem(newTask.Name);
+                item.SubItems.Add(newTask.Description);
+                item.SubItems.Add(newTask.Deadline.ToString("yyyy-MM-dd"));
+                taskListView.Items.Add(item);
+                
                 taskTextBox.Clear();
                 descriptionTextBox.Clear();
             }
@@ -109,10 +131,11 @@ namespace ToDoList
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            if (taskListBox.SelectedIndex != -1)
+            if (taskListView.SelectedItems.Count > 0)
             {
-                tasks.RemoveAt(taskListBox.SelectedIndex);
-                taskListBox.Items.RemoveAt(taskListBox.SelectedIndex);
+                int selectedIndex = taskListView.SelectedIndices[0];
+                tasks.RemoveAt(selectedIndex);
+                taskListView.Items.RemoveAt(selectedIndex);
             }
         }
     }
