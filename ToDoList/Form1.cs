@@ -94,12 +94,14 @@ namespace ToDoList
 
             // 添加按钮
             addButton.Location = new Point(rightPanelX, currentY);
-            addButton.Size = new Size(rightPanelWidth / 2 - 5, 20);
+            // 增大按钮高度和宽度
+            addButton.Size = new Size(rightPanelWidth / 2 - 5, 40);
             addButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // 删除按钮
             deleteButton.Location = new Point(rightPanelX + addButton.Width + 10, currentY);
-            deleteButton.Size = new Size(rightPanelWidth / 2 - 5, 20);
+            // 增大按钮高度和宽度
+            deleteButton.Size = new Size(rightPanelWidth / 2 - 5, 40);
             deleteButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             
             this.Controls.AddRange(new Control[] {
