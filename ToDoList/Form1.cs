@@ -53,30 +53,31 @@ namespace ToDoList
             // 任务列表
             taskListBox = new ListBox();
             taskListBox.Location = new Point(10, 10);
-            taskListBox.Size = new Size(380, 150);
+            taskListBox.Size = new Size(this.ClientSize.Width - 20, this.ClientSize.Height - 130);
             taskListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
             // 时间选择器
             deadlinePicker = new DateTimePicker();
-            deadlinePicker.Location = new Point(10, 170);
+            deadlinePicker.Location = new Point(10, taskListBox.Bottom + 10);
             deadlinePicker.Size = new Size(150, 20);
-            deadlinePicker.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            deadlinePicker.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             // 描述输入框
             descriptionTextBox = new TextBox();
-            descriptionTextBox.Location = new Point(170, 170);
-            descriptionTextBox.Size = new Size(220, 20);
-            descriptionTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            descriptionTextBox.Location = new Point(deadlinePicker.Right + 10, taskListBox.Bottom + 10);
+            descriptionTextBox.Size = new Size(this.ClientSize.Width - deadlinePicker.Right - 20, 20);
+            descriptionTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             descriptionTextBox.PlaceholderText = "任务描述";
 
             // 原有控件调整位置
-            taskTextBox.Location = new Point(10, 200);
+            taskTextBox.Location = new Point(10, descriptionTextBox.Bottom + 10);
+            taskTextBox.Size = new Size(this.ClientSize.Width - 200, 20);
             taskTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            addButton.Location = new Point(230, 200);
-            addButton.Size = new Size(80, 30);
+            addButton.Location = new Point(taskTextBox.Right + 10, descriptionTextBox.Bottom + 10);
+            addButton.Size = new Size(80, 20);
             addButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            deleteButton.Location = new Point(320, 200);
-            deleteButton.Size = new Size(80, 30);
+            deleteButton.Location = new Point(addButton.Right + 10, descriptionTextBox.Bottom + 10);
+            deleteButton.Size = new Size(80, 20);
             deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
             this.Controls.AddRange(new Control[] {
