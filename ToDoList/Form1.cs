@@ -74,21 +74,21 @@ namespace ToDoList
             // 任务名称输入框
             taskTextBox.Location = new Point(rightPanelX, currentY);
             taskTextBox.Size = new Size(rightPanelWidth, 20);
-            taskTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            taskTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right; // 修改 Anchor 属性
             currentY += taskTextBox.Height + verticalSpacing;
 
             // 截止时间选择器
             deadlinePicker = new DateTimePicker();
             deadlinePicker.Location = new Point(rightPanelX, currentY);
             deadlinePicker.Size = new Size(rightPanelWidth, 20);
-            deadlinePicker.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            deadlinePicker.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right; // 修改 Anchor 属性
             currentY += deadlinePicker.Height + verticalSpacing;
 
             // 任务描述输入框
             descriptionTextBox = new TextBox();
             descriptionTextBox.Location = new Point(rightPanelX, currentY);
             descriptionTextBox.Size = new Size(rightPanelWidth, 100);
-            descriptionTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            descriptionTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom; // 修改 Anchor 属性
             descriptionTextBox.Multiline = true;
             currentY += descriptionTextBox.Height + verticalSpacing;
 
