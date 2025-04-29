@@ -27,6 +27,12 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
 
+            // 设置 Cookie（用于前端检查）
+            Cookie loginCookie = new Cookie("isLoggedIn", "true");
+            loginCookie.setMaxAge(24 * 60 * 60); // 1天有效期
+            loginCookie.setPath("/"); // 整个域名可用
+            response.addCookie(loginCookie);
+
             // 重定向到主页或用户仪表板
             response.sendRedirect("task.html");
         } else {
