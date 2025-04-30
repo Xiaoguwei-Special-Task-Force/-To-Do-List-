@@ -49,6 +49,7 @@ type TaskManager struct {
 	tasks    map[string]*Task
 	storage  string
 	notifyCh chan Notification
+	wg sync.WaitGroup
 }
 
 func NewTaskManager(storagePath string) *TaskManager {
@@ -111,10 +112,12 @@ func (t *Task) resetReminder() {
             Recipient: t.Recipient,
         }
     })
+	
 }
 
 // 添加任务并设置定时器
 func (m *TaskManager) AddTask(t *Task)  {
+	m.wg.Add(1)
 	logrus.Infof("开始同步新增提醒任务>>>>>")
 	m.SyncTask(SyncCreate, t)
 }
@@ -138,6 +141,7 @@ func (m *TaskManager) CompleteTask(id string) {
 		}
 	}
 	m.saveTasks()
+	m.wg.Done()
 }
 
 // 持久化存储
@@ -155,6 +159,11 @@ func (m *TaskManager) loadTasks() {
 		return
 	}
 	json.Unmarshal(data, &m.tasks)
+}
+
+func (m *TaskManager) Wait() {
+    m.wg.Wait()
+    close(m.notifyCh) // 关闭通知通道
 }
 
 // 通知处理器
