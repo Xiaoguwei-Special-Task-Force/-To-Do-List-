@@ -2,29 +2,100 @@
   "1745998199107739891": {
     "id": "1745998199107739891",
     "name": "项目会议",
+    "task_category": "其他",
     "deadline": "2025-04-30T16:29:59.107738791+08:00",
     "reminder_msg": "记得准备会议材料",
+    "recipient": "",
     "completed": false
   },
   "1745998199111977791": {
     "id": "1745998199111977791",
     "name": "代码审查",
+    "task_category": "其他",
     "deadline": "2025-04-30T15:59:59.111976491+08:00",
     "reminder_msg": "检查PR#1234",
+    "recipient": "",
     "completed": false
   },
   "1745998486090718337": {
     "id": "1745998486090718337",
     "name": "项目会议",
+    "task_category": "其他",
     "deadline": "2025-04-30T15:34:53.090717537+08:00",
     "reminder_msg": "记得准备会议材料",
+    "recipient": "",
     "completed": true
   },
   "1745998486091344037": {
     "id": "1745998486091344037",
     "name": "代码审查",
+    "task_category": "其他",
     "deadline": "2025-04-30T15:35:16.091341937+08:00",
     "reminder_msg": "检查PR#1234",
+    "recipient": "",
+    "completed": true
+  },
+  "1746000095239063728": {
+    "id": "1746000095239063728",
+    "name": "项目会议",
+    "task_category": "其他",
+    "deadline": "2025-04-30T17:01:35.239063128+08:00",
+    "reminder_msg": "准备技术方案",
+    "recipient": "",
+    "completed": false
+  },
+  "1746000095245494728": {
+    "id": "1746000095245494728",
+    "name": "体检提醒",
+    "task_category": "其他",
+    "deadline": "2025-04-30T16:31:35.245493428+08:00",
+    "reminder_msg": "空腹体检",
+    "recipient": "",
+    "completed": false
+  },
+  "1746000095250880128": {
+    "id": "1746000095250880128",
+    "name": "系统维护",
+    "task_category": "其他",
+    "deadline": "2025-04-30T18:01:35.250878728+08:00",
+    "reminder_msg": "执行维护脚本",
+    "recipient": "",
+    "completed": false
+  },
+  "1746000148643825239": {
+    "id": "1746000148643825239",
+    "name": "项目会议",
+    "task_category": "其他",
+    "deadline": "2025-04-30T16:02:33.643824639+08:00",
+    "reminder_msg": "准备技术方案",
+    "recipient": "",
+    "completed": true
+  },
+  "1746000148644574139": {
+    "id": "1746000148644574139",
+    "name": "体检提醒",
+    "task_category": "其他",
+    "deadline": "2025-04-30T16:02:38.644572539+08:00",
+    "reminder_msg": "空腹体检",
+    "recipient": "",
+    "completed": true
+  },
+  "1746000148645928839": {
+    "id": "1746000148645928839",
+    "name": "系统维护",
+    "task_category": "其他",
+    "deadline": "2025-04-30T16:02:43.645927639+08:00",
+    "reminder_msg": "执行维护脚本",
+    "recipient": "",
+    "completed": true
+  },
+  "task-1": {
+    "id": "task-1",
+    "name": "",
+    "task_category": "工作",
+    "deadline": "2025-04-30T18:07:43.038868676+08:00",
+    "reminder_msg": "项目评审会议将于15分钟后开始",
+    "recipient": "team@company.com",
     "completed": true
   }
 }
