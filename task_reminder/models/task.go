@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
 	// "reminder/client"
 	"reminder/common"
 	// "reminder/service"
@@ -11,6 +12,14 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	// "github.com/sirupsen/logrus"
+)
+
+// 新增同步状态枚举
+const (
+    SyncCreate = iota
+    SyncUpdate
+    SyncDelete
 )
 
 // 任务模型
@@ -23,6 +32,8 @@ type Task struct {
 	Recipient	string		  `json:"recipient"`
 	Completed   bool          `json:"completed"`
 	Timer       *time.Timer   `json:"-"`
+	mu   		sync.Mutex
+	notifyChan chan<- Notification // 通知通道
 }
 
 // 修改通知消息结构
@@ -50,27 +61,69 @@ func NewTaskManager(storagePath string) *TaskManager {
 	return m
 }
 
-// 添加任务并设置定时器
-func (m *TaskManager) AddTask(t *Task) error {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+// 新增同步方法
+func (m *TaskManager) SyncTask(action int, task *Task) {
+    // m.mu.Lock()
+    // defer m.mu.Unlock()
 
-	now := time.Now()
-	if t.Deadline.Before(now) {
-		return fmt.Errorf("deadline has already passed")
-	}
-
-	// 设置定时器
-	t.Timer = time.AfterFunc(time.Until(t.Deadline), func() {
-		m.notifyCh <- Notification{
-            Category: t.Category,
-            Message:  fmt.Sprintf("[%s] %s", t.Name, t.ReminderMsg),
+    switch action {
+    case SyncCreate, SyncUpdate:
+        // 停止旧定时器
+        if old, exists := m.tasks[task.ID]; exists {
+            old.mu.Lock()
+            if old.Timer != nil {
+                old.Timer.Stop()
+            }
+            old.mu.Unlock()
         }
-		m.CompleteTask(t.ID)
-	})
+        
+        // 设置新定时器
+        task.notifyChan = m.notifyCh
+        task.resetReminder()
+        m.tasks[task.ID] = task
 
-	m.tasks[t.ID] = t
-	return m.saveTasks()
+    case SyncDelete:
+        if t, exists := m.tasks[task.ID]; exists {
+            t.mu.Lock()
+            if t.Timer != nil {
+                t.Timer.Stop()
+            }
+            t.mu.Unlock()
+            delete(m.tasks, task.ID)
+        }
+    }
+}
+
+// 任务实例方法
+func (t *Task) resetReminder() {
+    // t.mu.Lock()
+    // defer t.mu.Unlock()
+
+    duration := time.Until(t.Deadline)
+    if duration < 0 {
+        duration = 0 // 立即触发过期任务
+    }
+
+    t.Timer = time.AfterFunc(duration, func() {
+        t.notifyChan <- Notification{
+            Category:  t.Category,
+            Message:   fmt.Sprintf("[%s] 任务到期: %s", t.ID, t.ReminderMsg),
+            Recipient: t.Recipient,
+        }
+    })
+}
+
+// 添加任务并设置定时器
+func (m *TaskManager) AddTask(t *Task)  {
+	logrus.Infof("开始同步新增提醒任务>>>>>")
+	m.SyncTask(SyncCreate, t)
+}
+
+// 新增UpdateTask方法
+func (m *TaskManager) UpdateTask(updatedTask *Task) {
+	// 
+	logrus.Infof("开始同步变更提醒任务>>>>>")
+    m.SyncTask(SyncUpdate, updatedTask)
 }
 
 // 完成任务
@@ -109,15 +162,15 @@ func (m *TaskManager) StartNotifier(emailSvc *EmailService) {
 	go func() {
 		for n := range m.notifyCh {
 			// 控制台输出保留
-            fmt.Printf("\n[%-6s] %s\n", common.ColorCategory(n.Category), n.Message)
+            logrus.Infof("\n[%-6s] %s\n", common.ColorCategory(n.Category), n.Message)
             
             // 新增邮件发送
-            go func(notification Notification) {
-                err := emailSvc.SendNotification(notification)
-                if err != nil {
-                    logrus.Warn("邮件发送失败: %v | 消息: %s", err, notification.Message)
-                }
-            }(n)
+            // go func(notification Notification) {
+            //     err := emailSvc.SendNotification(notification)
+            //     if err != nil {
+            //         logrus.Warn("邮件发送失败: %v | 消息: %s", err, notification.Message)
+            //     }
+            // }(n)
 		}
 	}()
 }

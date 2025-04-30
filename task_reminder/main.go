@@ -49,12 +49,34 @@ func main() {
     manager.StartNotifier(emailSvc)
     
     // 添加测试任务
-    manager.AddTask(&models.Task{
-        ID:       "task-1",
-        Category: common.Work,
-        ReminderMsg:  "项目评审会议将于15分钟后开始",
-        Recipient: "team@company.com", // 新增收件人字段
-        Deadline: time.Now().Add(4 * time.Second),
-    })
+    // manager.AddTask(&models.Task{
+    //     ID:       "task-1",
+    //     Category: common.Work,
+    //     ReminderMsg:  "项目评审会议将于15分钟后开始",
+    //     Recipient: "team@company.com", // 新增收件人字段
+    //     Deadline: time.Now().Add(4 * time.Second),
+    // })
+	task := &models.Task{
+        ID:        "doc-2023",
+        Category:  1,
+        ReminderMsg:   "项目需求文档审核",
+        Recipient: "pm@company.com",
+        Deadline:  time.Now().Add(12 * time.Second),
+    }
+    manager.AddTask(task)
+
+    // 模拟同步更新任务
+    go func() {
+        time.Sleep(3 * time.Second)
+        updatedTask := &models.Task{
+            ID:        "doc-2023",
+            Category:  1,
+            ReminderMsg:   "更新后的需求文档审核", // 消息变更
+            Recipient: "pm@company.com",
+            Deadline:  time.Now().Add(3 * time.Second), // 截止时间变更
+        }
+        manager.UpdateTask(updatedTask)
+    }()
+
 	select {}
 }
