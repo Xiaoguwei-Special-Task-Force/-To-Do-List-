@@ -3,12 +3,24 @@
 #include <string>
 using namespace std;
 
-// 声明任务分类函数（初期为空实现）
 string classifyTask(string taskDescription) {
-    return "";
+    // 转小写方便统一判断
+    string lowerDesc = taskDescription;
+    for (auto& c : lowerDesc) {
+        c = tolower(c);
+    }
+    // 简单关键词判断
+    if (lowerDesc.find("meeting") != string::npos) {
+        return "work";
+    }
+    else if (lowerDesc.find("homework") != string::npos) {
+        return "study";
+    }
+    return "other";
 }
 
 int main() {
-    cout << "C++ classification module initialized." << endl;
+    string task = "Prepare for meeting";
+    cout << "Task: " << task << " Classification: " << classifyTask(task) << endl;
     return 0;
 }
