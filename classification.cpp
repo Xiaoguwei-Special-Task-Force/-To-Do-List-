@@ -21,11 +21,8 @@ string classifyTask(string taskDescription) {
 }
 
 int main() {
-    string task1 = "Finish the report";
-    string task2 = "Do homework";
-    string task3 = "Plan a trip";
-    cout << "Task: " << task1 << " Classification: " << classifyTask(task1) << endl;
-    cout << "Task: " << task2 << " Classification: " << classifyTask(task2) << endl;
-    cout << "Task: " << task3 << " Classification: " << classifyTask(task3) << endl;
+    string taskDescription;
+    getline(cin, taskDescription); // 从输入获取任务描述
+    cout << classifyTask(taskDescription) << endl; // 输出分类结果
     return 0;
 }
